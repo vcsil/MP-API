@@ -11,11 +11,11 @@ export function errorHandlerMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log(err);
+  console.log('\n', err, '\n');
 
   if (isAppError(err)) {
     return res.status(errorTypeToStatusCode(err.type)).send(err.message);
   }
 
-  return res.sendStatus(500);
+  return res.status(500).send(err.message);
 }
