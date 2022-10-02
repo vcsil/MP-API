@@ -1,0 +1,28 @@
+{
+    "root": true,
+    "env": {
+      "es2022": true,
+      "jasmine": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": [
+        "airbnb-typescript/base"
+    ],
+    "plugins": [
+        "import", 
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": "./tsconfig.eslint.json"
+    },
+    "rules": {
+        "indent": "off",
+        "import/no-extraneous-dependencies": [2, { "devDependencies": ["**/test.tsx", "**/test.ts"] }],
+        "@typescript-eslint/indent": [2, 2]
+    }
+}
