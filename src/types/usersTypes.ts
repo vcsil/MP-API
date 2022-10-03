@@ -1,7 +1,11 @@
-import { User } from '@prisma/client';
+import { RefreshToken, User } from '@prisma/client';
 
-export type CreateUserData = Omit<User, 'id' | 'createdAt'> & {
+export type CreateUserDataT = Omit<User, 'id' | 'createdAt'> & {
   confirmPassword: string;
 };
 
-export type InsertUserData = Omit<CreateUserData, 'confirmPassword'>;
+export type SignInUSerDataT = Omit<CreateUserDataT, 'email' | 'confirmPassword'>;
+
+export type InsertUserDataT = Omit<CreateUserDataT, 'confirmPassword'>;
+
+export type RefreshTokenDataT = Omit<RefreshToken, 'id'>;
