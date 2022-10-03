@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import jwt from 'jsonwebtoken';
 
 import * as authController from '../controllers/authController';
 
@@ -15,6 +16,10 @@ authRouter.post('/signup',
 authRouter.post('/signin',
   validateSchema(singInSchema, 'body'),
   authController.signIn,
+);
+
+authRouter.patch('/refresh',
+  authController.refresh,
 );
 
 export default authRouter;
