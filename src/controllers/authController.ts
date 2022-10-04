@@ -29,3 +29,11 @@ export async function refresh(req: Request, res: Response) {
 
   return res.status(200).send({ userId, accessToken, refreshToken });
 }
+
+export async function logout(req: Request, res: Response) {
+  const { refreshToken } = req.body;
+
+  await refreshTokenService.finishSession(refreshToken);
+
+  return res.status(204).send();
+}

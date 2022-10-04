@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import * as refreshTokenRepository from '../repositories/refreshTokenRepository';
 
-import { forbiddenError, MyCustomError } from '../utils/errorUtils';
+import { forbiddenError, MyCustomError, notFoundError } from '../utils/errorUtils';
 import { IToken } from '../types/tokenTypes';
 
 export async function createRefreshToken(userId: number, refreshToken: string) {
@@ -47,4 +47,12 @@ Promise<{ userId: number, accessToken: string, refreshToken: string }> {
   }
 }
 
+export async function finishSession(oldRefreshToken: string): Promise<RefreshToken> {
+  const currentRefreshToken: RefreshToken | null = await refreshTokenRepository.findByRefreshToken(oldRefreshToken);
 
+  if (!currentRefreshToken) {
+    throw new MyCustomError(notFoundError(''));
+  }
+
+  return refreshTokenRepository.deleteRefreshToken(currentRefreshToken.id);
+}

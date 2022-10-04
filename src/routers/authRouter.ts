@@ -22,4 +22,8 @@ authRouter.patch('/refresh',
   authController.refresh,
 );
 
+authRouter.delete('/logout',
+  authController.logout,
+);
+
 export default authRouter;
