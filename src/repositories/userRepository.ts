@@ -20,3 +20,9 @@ export async function findByName(name: string): Promise<User | null> {
     where: { name },
   });
 }
+
+export async function findById(id: number): Promise<User | null> {
+  return prisma.user.findUnique({
+    where: { id },
+  });
+}

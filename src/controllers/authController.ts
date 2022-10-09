@@ -18,16 +18,16 @@ export async function signIn(req: Request, res: Response) {
 
   const { userIdDB, accessToken, refreshToken } = await userService.createSession(user);
 
-  res.status(200).send({ userId: userIdDB, accessToken, refreshToken });
+  res.status(200).send({ userId: userIdDB, username: user.name, accessToken, refreshToken });
   return;
 }
 
 export async function refresh(req: Request, res: Response) {
   const { refreshToken: oldRefreshToken }: { refreshToken: string } = req.body;
 
-  const { userId, accessToken, refreshToken } = await refreshTokenService.refreshSession(oldRefreshToken);
+  const { name, userId, accessToken, refreshToken } = await refreshTokenService.refreshSession(oldRefreshToken);
 
-  return res.status(200).send({ userId, accessToken, refreshToken });
+  return res.status(200).send({ userId, name, accessToken, refreshToken });
 }
 
 export async function logout(req: Request, res: Response) {
