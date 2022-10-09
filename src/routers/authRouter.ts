@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
 
 import * as authController from '../controllers/authController';
 
@@ -18,7 +17,7 @@ authRouter.post('/signin',
   authController.signIn,
 );
 
-authRouter.patch('/refresh',
+authRouter.post('/refresh',
   authController.refresh,
 );
 
