@@ -9,11 +9,15 @@ import { CreateUserDataT, SignInUSerDataT } from '../types/usersTypes';
 import { conflictError, MyCustomError, unauthorizedError } from '../utils/errorUtils';
 
 export async function createUser(user: CreateUserDataT): Promise<User> {
-  const { name, email, password } = user;
+  const name = user.name.toLowerCase();
+  const email = user.email.toLowerCase();
+  const { password } = user;
 
-  const userDB: User | null = await userRepository.findByEmail(email);
+  const usedEmail: User | null = await userRepository.findByEmail(email);
+  if (usedEmail) throw new MyCustomError(conflictError('An account is already linked to this email')) ;
 
-  if (userDB) throw new MyCustomError(conflictError('An account is already linked to this email')) ;
+  const userName: User | null = await userRepository.findByName(name);
+  if (userName) throw new MyCustomError(conflictError('An account is already linked to this name')) ;
 
   const hashedPassword: string = await hashPassword(password);
 
