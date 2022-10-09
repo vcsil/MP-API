@@ -8,9 +8,9 @@ import { CreateUserDataT, SignInUSerDataT } from '../types/usersTypes';
 export async function signUp(req: Request, res: Response) {
   const user: CreateUserDataT = req.body;
 
-  const { id, name, email } = await userService.createUser(user);
+  const { id, name } = await userService.createUser(user);
 
-  return res.status(201).send({ id, name, email });
+  return res.status(201).send({ id, name });
 }
 
 export async function signIn(req: Request, res: Response) {
