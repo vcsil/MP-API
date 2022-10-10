@@ -14,3 +14,14 @@ export default async function userFactory(): Promise<CreateUserDataT> {
   return user;
 }
 
+export async function userIdFactory(): Promise<number> {
+  return faker.datatype.number(100);
+}
+
+export async function createdAtFactory(): Promise<Date> {
+  return faker.datatype.datetime();
+}
+
+export async function tokenFactory(): Promise<string> {
+  return faker.datatype.uuid();
+}

@@ -6,7 +6,7 @@ import * as refreshTokenService from '../../src/services/refreshTokenService';
 import * as userRepository from '../../src/repositories/userRepository';
 import * as encryptUtil from '../../src/utils/encryptUtil';
 import * as userService from '../../src/services/userService';
-import userFactory from '../factories/generateUser';
+import userFactory, { createdAtFactory, tokenFactory, userIdFactory } from '../factories/generateUser';
 import { conflictError, MyCustomError, unauthorizedError } from '../../src/utils/errorUtils';
 
 beforeEach(async () => {
@@ -43,14 +43,16 @@ describe('Testa createUser', () => {
 
   it('Não deve criar usuário com email repetido', async () => {
     const user = await userFactory();
+    const id = await userIdFactory();
+    const createdAt = await createdAtFactory();
 
     jest.spyOn(
       userRepository,
       'findByEmail',
     ).mockImplementationOnce((): any => ({
       ...user,
-      id: 3,
-      createdAt: '2022-10-09T22:50:58.729Z',
+      id,
+      createdAt,
     }));
 
     const promise = userService.createUser(user);
@@ -61,6 +63,8 @@ describe('Testa createUser', () => {
 
   it('Não deve criar usuário com nome repetido', async () => {
     const user = await userFactory();
+    const id = await userIdFactory();
+    const createdAt = await createdAtFactory();
 
     jest.spyOn(
       userRepository,
@@ -72,8 +76,8 @@ describe('Testa createUser', () => {
       'findByName',
     ).mockImplementationOnce((): any => ({
       ...user,
-      id: 3,
-      createdAt: '2022-10-09T22:50:58.729Z',
+      id,
+      createdAt,
     }));
 
     const promise = userService.createUser(user);
@@ -86,9 +90,10 @@ describe('Testa createUser', () => {
 describe('Testa createSession', () => {
   it('Deve criar uma sessão', async () => {
     const { name, email, password } = await userFactory();
-    const userIdDB = 4;
-    const accessToken = 'accessToken';
-    const refreshToken = 'refreshToken';
+    const userIdDB = await userIdFactory();
+    const createdAt = await createdAtFactory();
+    const accessToken = await tokenFactory();
+    const refreshToken = await tokenFactory();
 
     jest.spyOn(
       userRepository,
@@ -98,7 +103,7 @@ describe('Testa createSession', () => {
       name,
       email,
       password,
-      createdAt: '2022-10-09T22:50:58.729Z',
+      createdAt,
     }));
 
     jest.spyOn(
@@ -148,7 +153,8 @@ describe('Testa createSession', () => {
 
   it('Não deve criar sessão com senha errada', async () => {
     const { name, email, password } = await userFactory();
-    const userIdDB = 4;
+    const userIdDB = await userIdFactory();
+    const createdAt = await createdAtFactory();
 
     jest.spyOn(
       userRepository,
@@ -158,7 +164,7 @@ describe('Testa createSession', () => {
       name,
       email,
       password,
-      createdAt: '2022-10-09T22:50:58.729Z',
+      createdAt,
     }));
 
     jest.spyOn(
