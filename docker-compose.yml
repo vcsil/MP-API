@@ -4,7 +4,7 @@ services:
     container_name: postgres_mp_db
     restart: always
     ports:
-      - 8756:5432
+      - 6543:5432
     env_file:
       - .env
     volumes:
@@ -14,7 +14,7 @@ services:
     container_name: node_mp_app
     build: .
     ports:
-      - 805:5000
+      - 80:5000
     depends_on:
       - postgres_mp_db
     env_file:
