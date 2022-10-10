@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npx prisma generate && npx prisma migrate deploy",
-    "start": "node dist/server.js",
+    "build": "tsc",
+    "start": "npm run prisma:deploy && node dist/server.js",
     "dev": "nodemon ./src/server.ts",
+    "prisma:deploy": "prisma migrate deploy",
     "prismaMigrations": "npx dotenv-cli -e .env.test npx prisma migrate dev",
     "test:unit": "npm run prismaMigrations && dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/unit",
     "test:integration": "npm run prismaMigrations && dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/integration",
