@@ -1,0 +1,24 @@
+services:
+  postgres_mp_db:
+    image: postgres
+    container_name: postgres_mp_db
+    restart: always
+    ports:
+      - 6543:5432
+    env_file:
+      - .env
+    volumes:
+      - pg_mp_db:/var/lib/postgresql/data
+
+  node_mp_app:
+    container_name: node_mp_app
+    build: .
+    ports:
+      - 80:5000
+    depends_on:
+      - postgres_mp_db
+    env_file:
+      - .env
+
+volumes:
+  pg_mp_db:
