@@ -83,3 +83,98 @@ describe('Testa createUser', () => {
   });
 });
 
+describe('Testa createSession', () => {
+  it('Deve criar uma sessão', async () => {
+    const { name, email, password } = await userFactory();
+    const userIdDB = 4;
+    const accessToken = 'accessToken';
+    const refreshToken = 'refreshToken';
+
+    jest.spyOn(
+      userRepository,
+      'findByName',
+    ).mockImplementationOnce((): any => ({
+      id: userIdDB,
+      name,
+      email,
+      password,
+      createdAt: '2022-10-09T22:50:58.729Z',
+    }));
+
+    jest.spyOn(
+      encryptUtil,
+      'validatePassword',
+    ).mockImplementationOnce((): any => true);
+
+    jest.spyOn(
+      jwt,
+      'sign',
+    ).mockImplementationOnce((): any => accessToken)
+      .mockImplementationOnce((): any => refreshToken);
+
+    jest.spyOn(
+      refreshTokenService,
+      'createRefreshToken',
+    ).mockImplementationOnce((): any => ({ userIdDB }));
+
+    const promise = await userService.createSession({ name, password });
+
+    expect(userRepository.findByName).toBeCalled();
+    expect(encryptUtil.validatePassword).toBeCalled();
+    expect(jwt.sign).toBeCalled();
+    expect(refreshTokenService.createRefreshToken).toBeCalled();
+    expect(promise).toMatchObject({ userIdDB, accessToken, refreshToken });
+  });
+
+  it('Não deve criar sessão com usuário inexistente', async () => {
+    const { name, password } = await userFactory();
+
+    jest.spyOn(
+      userRepository,
+      'findByName',
+    ).mockImplementationOnce((): any => null);
+
+
+    const promise = userService.createSession({ name, password });
+
+    expect(promise).rejects.toBeInstanceOf(MyCustomError);
+    expect(promise).rejects.toEqual(new MyCustomError(unauthorizedError('Cannot create session 1')));
+
+    expect(userRepository.findByName).toBeCalled();
+    expect(encryptUtil.validatePassword).not.toBeCalled();
+    expect(jwt.sign).not.toBeCalled();
+    expect(refreshTokenService.createRefreshToken).not.toBeCalled();
+  });
+
+  it('Não deve criar sessão com senha errada', async () => {
+    const { name, email, password } = await userFactory();
+    const userIdDB = 4;
+
+    jest.spyOn(
+      userRepository,
+      'findByName',
+    ).mockImplementationOnce((): any => ({
+      id: userIdDB,
+      name,
+      email,
+      password,
+      createdAt: '2022-10-09T22:50:58.729Z',
+    }));
+
+    jest.spyOn(
+      encryptUtil,
+      'validatePassword',
+    ).mockImplementationOnce((): any => false);
+
+    const promise = userService.createSession({ name, password });
+
+    expect(promise).rejects.toBeInstanceOf(MyCustomError);
+    expect(promise).rejects.toEqual(new MyCustomError(unauthorizedError('Cannot create session')));
+
+    expect(userRepository.findByName).toBeCalled();
+
+    expect(jwt.sign).not.toBeCalled();
+    expect(refreshTokenService.createRefreshToken).not.toBeCalled();
+  });
+
+});
